@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>performance 兼容性测试</title>
+    <link rel="stylesheet" href="./demo.css">
     <style>
       body {
         margin: 20px;
@@ -13,12 +14,68 @@
       li {
         margin: 10px 0;
       }
+      table td {
+        padding: 4px;
+        white-space: nowrap;
+        border-bottom: 1px solid #ebeef5;
+        border-right: 1px solid #ebeef5;
+        font-size: 14px;
+      }
+
+      table td:first-child {
+        border-left: 1px solid #ebeef5;
+        white-space: normal;
+      }
+
+      table tr:first-child  td{
+        border-top: 1px solid #ebeef5;
+      }
     </style>
+
+    <script src="demo.js"></script>
   </head>
   <body>
     <p id="browser"></p>
     <p>测试结果：</p>
     <ol id="result"></ol>
+    <h2>markdown 格式</h2>
+    <table id="resultTable">
+      <tr>
+        <td>浏览器/平台 | </td>
+        <td>performance | </td>
+        <td>navigation | </td>
+        <td>timeOrigin | </td>
+        <td>timing | </td>
+        <td>now | </td>
+        <td>getEntries | </td>
+        <td>getEntriesByName | </td>
+        <td>getEntriesByType | </td>
+        <td>PerformanceEntry | </td>
+        <td>PerformanceResourceTiming | </td>
+        <td>PerformanceNavigationTiming | </td>
+        <td>PerformancePaintTiming</td>
+      </tr>
+      <tr>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>---</td>
+      </tr>
+      <tr id="tableResult"></tr>
+    </table>
+
+    <h2>performance.getEntries() 结果</h2>
+    <pre id="getEntries"></pre>
+    <img src="timestamp-diagram.svg" alt="测试图片">
     <script>
       var array = [{
         root: true,
@@ -63,6 +120,7 @@
         type: 'func'
       }];
 
+      var html2 = ['<td>' + navigator.userAgent + ' | </td>'];
       var html = array.map(function (item) {
         var support = false;
         if (item.root) {
@@ -74,12 +132,25 @@
             support = true;
           }
         }
-
+        html2.push('<td>' + (support ? '支持 | ' : '不支持 | ') + '</td>');
         return '<li>' + item.name + (support ? '：支持' : ' ：不支持') + '</li>';
       }).join('');
 
       document.getElementById('browser').innerHTML = '浏览器 UA' + navigator.userAgent;
       document.getElementById('result').innerHTML = html;
+
+      document.getElementById('tableResult').innerHTML = html2.join('');
+
+      window.addEventListener('load', function () {
+        // 延迟执行
+        setTimeout(function () {
+          if(performance && performance.getEntries) {
+            var entries = performance.getEntries();
+            document.getElementById('getEntries').innerHTML = JSON.stringify(entries, null, 2);
+          }
+        }, 2000);
+      }, false);
+
     </script>
   </body>
 </html>

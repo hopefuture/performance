@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="UTF-8">
+    <title>performance 兼容性测试</title>
+    <style>
+      body {
+        margin: 20px;
+      }
+      p {
+        margin-left: 20px;
+      }
+      li {
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <p id="browser"></p>
+    <p>测试结果：</p>
+    <ol id="result"></ol>
+    <script>
+      var array = [{
+        root: true,
+        name: 'performance',
+        type: 'func'
+      }, {
+        name: 'navigation',
+        type: 'object'
+      }, {
+        name: 'timeOrigin',
+        type: 'number'
+      }, {
+        name: 'timing',
+        type: 'object'
+      }, {
+        name: 'now',
+        type: 'number'
+      }, {
+        name: 'getEntries',
+        type: 'func'
+      }, {
+        name: 'getEntriesByName',
+        type: 'func'
+      }, {
+        name: 'getEntriesByType',
+        type: 'func'
+      }, {
+        root: true,
+        name: 'PerformanceEntry',
+        type: 'func'
+      }, {
+        root: true,
+        name: 'PerformanceResourceTiming',
+        type: 'func'
+      }, {
+        root: true,
+        name: 'PerformanceNavigationTiming',
+        type: 'func'
+      }, {
+        root: true,
+        name: 'PerformancePaintTiming',
+        type: 'func'
+      }];
+
+      var html = array.map(function (item) {
+        var support = false;
+        if (item.root) {
+          if (window[item.name] !== undefined) {
+            support = true;
+          }
+        } else {
+          if (window.performance && window.performance[item.name] !== undefined) {
+            support = true;
+          }
+        }
+
+        return '<li>' + item.name + (support ? '：支持' : ' ：不支持') + '</li>';
+      }).join('');
+
+      document.getElementById('browser').innerHTML = '浏览器 UA' + navigator.userAgent;
+      document.getElementById('result').innerHTML = html;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <title>performance 兼容性测试</title>
+    <link rel="stylesheet" href="./demo.css">
+    <style>
+      body {
+        margin: 20px;
+      }
+      p {
+        margin-left: 20px;
+      }
+      li {
+        margin: 10px 0;
+      }
+      table td {
+        padding: 4px;
+        white-space: nowrap;
+        border-bottom: 1px solid #ebeef5;
+        border-right: 1px solid #ebeef5;
+        font-size: 14px;
+      }
+
+      table td:first-child {
+        border-left: 1px solid #ebeef5;
+        white-space: normal;
+      }
+
+      table tr:first-child  td{
+        border-top: 1px solid #ebeef5;
+      }
+    </style>
+
+    <script src="demo.js"></script>
+    <!-- GrowingIO Analytics code version 2.1 -->
+    <!-- Copyright 2015-2018 GrowingIO, Inc. More info available at http://www.growingio.com -->
+
+    <script type='text/javascript'>
+      !function(e,t,n,g,i){e[i]=e[i]||function(){(e[i].q=e[i].q||[]).push(arguments)},n=t.createElement("script"),tag=t.getElementsByTagName("script")[0],n.async=1,n.src=('https:'==document.location.protocol?'https://':'http://')+g,tag.parentNode.insertBefore(n,tag)}(window,document,"script","assets.giocdn.com/2.1/gio.js","gio");
+      gio('init','843b3472b3ff785b', {});
+
+      //custom page code begin here
+
+      //custom page code end here
+
+      gio('send');
+
+    </script>
+
+    <!-- End GrowingIO Analytics code version: 2.1 -->
+  </head>
+  <body>
+    <p id="browser"></p>
+    <p>测试结果：</p>
+    <ol id="result"></ol>
+    <h2>markdown 格式</h2>
+    <table id="resultTable">
+      <tr>
+        <td>浏览器/平台 | </td>
+        <td>performance | </td>
+        <td>navigation | </td>
+        <td>timeOrigin | </td>
+        <td>timing | </td>
+        <td>now | </td>
+        <td>getEntries | </td>
+        <td>getEntriesByName | </td>
+        <td>getEntriesByType | </td>
+        <td>PerformanceEntry | </td>
+        <td>PerformanceResourceTiming | </td>
+        <td>PerformanceNavigationTiming | </td>
+        <td>PerformancePaintTiming</td>
+      </tr>
+      <tr>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>--- | </td>
+        <td>---</td>
+      </tr>
+      <tr id="tableResult"></tr>
+    </table>
+
+    <h2>performance.getEntries() 结果</h2>
+    <pre id="getEntries"></pre>
+    <img src="timestamp-diagram.svg" alt="测试图片">
+    <script>
+      var array = [{
+        root: true,
+        name: 'performance',
+        type: 'func'
+      }, {
+        name: 'navigation',
+        type: 'object'
+      }, {
+        name: 'timeOrigin',
+        type: 'number'
+      }, {
+        name: 'timing',
+        type: 'object'
+      }, {
+        name: 'now',
+        type: 'number'
+      }, {
+        name: 'getEntries',
+        type: 'func'
+      }, {
+        name: 'getEntriesByName',
+        type: 'func'
+      }, {
+        name: 'getEntriesByType',
+        type: 'func'
+      }, {
+        root: true,
+        name: 'PerformanceEntry',
+        type: 'func'
+      }, {
+        root: true,
+        name: 'PerformanceResourceTiming',
+        type: 'func'
+      }, {
+        root: true,
+        name: 'PerformanceNavigationTiming',
+        type: 'func'
+      }, {
+        root: true,
+        name: 'PerformancePaintTiming',
+        type: 'func'
+      }, {
+        root: true,
+        name: 'msFirstPaint',
+        type: 'number'
+      }];
+
+      var html2 = ['<td>' + navigator.userAgent + ' | </td>'];
+      var html = array.map(function (item) {
+        var support = false;
+        if (item.root) {
+          if (window[item.name] !== undefined) {
+            support = true;
+          }
+        } else {
+          if (window.performance && window.performance[item.name] !== undefined) {
+            support = true;
+          }
+        }
+        html2.push('<td>' + (support ? '支持 | ' : '不支持 | ') + '</td>');
+        return '<li>' + item.name + (support ? '：支持' : ' ：不支持') + '</li>';
+      }).join('');
+
+      document.getElementById('browser').innerHTML = '浏览器 UA' + navigator.userAgent;
+      document.getElementById('result').innerHTML = html;
+
+      document.getElementById('tableResult').innerHTML = html2.join('');
+
+      window.addEventListener('load', function () {
+        // 延迟执行
+        setTimeout(function () {
+          if(performance && performance.getEntries) {
+            var entries = performance.getEntries();
+            document.getElementById('getEntries').innerHTML = JSON.stringify(entries, null, 2);
+          }
+        }, 2000);
+      }, false);
+
+    </script>
+  </body>
+</html>

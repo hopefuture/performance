@@ -56,7 +56,7 @@
   <body>
     <p id="browser"></p>
     <p>测试结果：</p>
-    <ol id="result"></ol>
+    <ol id="result" class="performance-result"></ol>
     <h2>markdown 格式</h2>
     <table id="resultTable">
       <tr>
@@ -156,7 +156,9 @@
           }
         }
         html2.push('<td>' + (support ? '支持 | ' : '不支持 | ') + '</td>');
-        return '<li>' + item.name + (support ? '：支持' : ' ：不支持') + '</li>';
+        return '<li class="performance-result-item">' + item.name + (
+          support ? '：支持' : ' ：不支持'
+        ) + '</li>';
       }).join('');
 
       document.getElementById('browser').innerHTML = '浏览器 UA' + navigator.userAgent;
